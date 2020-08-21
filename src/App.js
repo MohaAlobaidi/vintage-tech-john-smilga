@@ -12,20 +12,39 @@ import ProductDetails from './pages/ProductDetails'
 import Products from './pages/Products'
 //component
 import Header from './components/Header'
-
+import Alert from './components/Alert'
+import PrivateRoute from './components/PrivateRoute'
+import ScrollButton from './components/ScrollButton'
 
 export default function App() {
+
   return (
   <BrowserRouter>
   <Header/>
+ <Alert/>
+ <ScrollButton/>
  <Switch>
-    <Route path="/" exact={true} component={Home}/>
-    <Route path="/about"  component={About}/>
+    <Route path="/" exact={true}>
+      <Home/>
+    </Route>
+
+   <Route path="/about">
+      <About/>
+    </Route>
+
     <Route path="/cart"  component={Cart}/>
-    <Route path="/checkout"  component={Checkout}/>
+
+    <PrivateRoute path="/checkout">
+      <Checkout/>
+     </PrivateRoute>
+
     <Route path="/products" exact component={Products}/>
-    <Route path="/login" component={Login}/>
     
+    <Route path="/login">
+     <Login/>
+    </Route>
+
+   
     <Route path="/products/:id"
     children={<ProductDetails></ProductDetails>}/>
     {/* <Route path="/products/:id" component={ProductDetails}/> */}

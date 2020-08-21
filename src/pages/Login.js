@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 
 //strapi function
 import loginUser from './../strapi/loginUser'
@@ -6,14 +6,15 @@ import registerUser from './../strapi/registerUser'
 
 //handle user
 import {useHistory} from 'react-router-dom'
-
+import {UserContext} from './../context/user'
 
 
 export default function Login() {
   const history = useHistory()
   // setup user context
-
-
+//const value = useContext(UserContext)
+//console.log(value)
+const {userLogin,alert ,showAlert} = useContext(UserContext)
 
 
 
@@ -23,7 +24,7 @@ export default function Login() {
   const [username,setUsername] = useState('default')
   const [isMember,setIsMember] = useState(true)
 
-  let isEmpty = !email || !password || !username;
+  let isEmpty = !email || !password || !username || alert.show;
 
 
   const toggleMember = ()=>{
@@ -35,10 +36,13 @@ export default function Login() {
   }
 
   const handleSubmit = async (e)=>{
-    e.preventDefault()
-  let response ;
-  if(isMember){
-    response = await loginUser({email,password})
+    // alert for not to much submitting
+    showAlert({msg:'accessing user data .please wait..'})
+   
+    e.preventDefault();
+      let response ;
+       if(isMember){
+        response = await loginUser({email,password})
 
   }
   else{
@@ -48,11 +52,23 @@ export default function Login() {
 
   if (response){
     //
-    console.log('success')
+    
+    const {jwt:token,user:{username}} = response.data
     console.log(response)
+    console.log( response.data)
+    const newUser = {token,username}
+    userLogin(newUser)//from UserContext 
+      showAlert({
+        msg:`you are logged in :${username} shop away my friend...`
+      })
+    history.push("/products")
   }
   else{
     //show alert
+    showAlert({
+      msg:`there was an error ,please try again..`,
+      type:'danger'
+    })
   }
 
   }

@@ -5,7 +5,7 @@ export function flattenProducts(data){
         //cloudinary
         //let image = item.image[0].url;
         //local setup no deployment
-        let image = `${url}${item.image[0].url}`
+        let image =` ${item.image}` && `${url}${item.image[0].url}`||null
         return {...item,image}
     })
 }
